@@ -1,0 +1,61 @@
+@startuml
+' 包结构与分层
+package "com.library.domain" {
+    interface Item {
+        + getId(): String
+        + getTitle(): String
+        + isAvailable(): boolean
+    }
+
+    abstract class LibraryItem {
+        - String id
+        - String title
+        - Date publishedDate
+        # boolean checkOut()
+        # boolean returnItem()
+    }
+
+    class Book {
+        - String author
+        - int pages
+        + Book(String, String, int)
+        + getAuthor(): String
+    }
+
+    class Journal {
+        - String ISSN
+        - int volume
+        + Journal(String, String, int)
+    }
+}
+
+package "com.library.service" {
+    class LibraryService {
+        - Map<String, Item> inventory
+        + addItem(Item)
+        + checkoutItem(String, String) : boolean
+        + returnItem(String, String) : boolean
+    }
+}
+
+package "com.library.user" {
+    class Patron {
+        - String userId
+        - List<CheckoutRecord> records
+        + borrowItem(Item)
+        + returnItem(Item)
+    }
+
+    class Librarian {
+        - String staffId
+        + generateReport()
+    }
+}
+
+' 关系定义
+LibraryItem <|-- Book
+LibraryItem <|-- Journal
+LibraryItem ..|> Item
+Patron --> LibraryService
+Librarian --> LibraryService
+@enduml
